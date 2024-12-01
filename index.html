@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Cache-Control" content="no-cache" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WeatherPlay</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+      integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DynaPuff:wght@400..700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="main">
+      <div class="top">
+        <h1>WeatherPlay <i class="fa-solid fa-cloud-bolt"></i></h1>
+      </div>
+      <div class="mid" id="mid">
+        <input
+          type="text"
+          id="cityname"
+          required
+          spellcheck="false"
+          placeholder="City Name"
+          autofocus
+        />
+        <button id="go"><i class="fa-solid fa-arrow-right"></i></button>
+      </div>
+      <div class="lower" id="lower">
+        <div id="ll">
+          <div class="location">
+            <h1 id="location-name">
+              <i class="fa-solid fa-location-dot"></i>
+            </h1>
+          </div>
+          <div class="temp">
+            <h1 id="temp-current">
+              <i class="fa-solid fa-temperature-half"></i>
+            </h1>
+          </div>
+          <div class="desc">
+            <h1 id="description-weather">
+              <i class="fa-solid fa-cloud"></i>
+            </h1>
+          </div>
+          <div class="humidity">
+            <h1 id="humidity-value">
+              <i class="fa-solid fa-water"></i>
+            </h1>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      document.addEventListener("input", () => {
+        document.getElementById("lower").style.height = "10%";
+        document.getElementById("ll").style.visibility = "hidden";
+        document.getElementById("cityname").style.background = "#393939";
+      });
+      async function getWeather(cityname) {
+        document.getElementsByTagName("input")[0].classList.add("anim");
+        try {
+          res = await fetch(`https://weatherplay-2.onrender.com/weather?city=${cityname}`);
+
+          document.getElementById("lower").style.height = "50%";
+          resj = await res.json();
+
+          let city = resj.location.name;
+          let state = resj.location.region;
+          let country = resj.location.country;
+          let temp = resj.current.temp_c;
+          let humidity = resj.current.humidity;
+          let description = resj.current.condition.text;
+          if (temp > 32) {
+            const tempIcon = document.querySelector("#temp-current i");
+            const newIcon = document.createElement("i");
+            newIcon.classList.add("fa-solid", "fa-temperature-full");
+            tempIcon.replaceWith(newIcon);
+          } else if (temp > 18 && temp < 32) {
+            const tempIcon = document.querySelector("#temp-current i");
+            const newIcon = document.createElement("i");
+            newIcon.classList.add("fa-solid", "fa-temperature-half");
+            tempIcon.replaceWith(newIcon);
+          } else if (temp > 6 && temp < 18) {
+            const tempIcon = document.querySelector("#temp-current i");
+            const newIcon = document.createElement("i");
+            newIcon.classList.add("fa-solid", "fa-temperature-quarter");
+            tempIcon.replaceWith(newIcon);
+          } else {
+            const tempIcon = document.querySelector("#temp-current i");
+            const newIcon = document.createElement("i");
+            newIcon.classList.add("fa-solid", "fa-snowflake");
+            tempIcon.replaceWith(newIcon);
+          }
+
+          if (
+            description.toLowerCase().indexOf("sun") != -1 ||
+            description.toLowerCase().indexOf("clear") != -1
+          ) {
+            const tempIcon = document.querySelector("#description-weather i");
+            const newIcon = document.createElement("i");
+            newIcon.classList.add("fa-solid", "fa-sun");
+            tempIcon.replaceWith(newIcon);
+          } else if (description.toLowerCase().indexOf("cloud") != -1) {
+            const tempIcon = document.querySelector("#description-weather i");
+            const newIcon = document.createElement("i");
+            newIcon.classList.add("fa-solid", "fa-cloud");
+            tempIcon.replaceWith(newIcon);
+          } else if (description.toLowerCase().indexOf("rain") != -1) {
+            const tempIcon = document.querySelector("#description-weather i");
+            const newIcon = document.createElement("i");
+            newIcon.classList.add("fa-solid", "fa-cloud-rain");
+            tempIcon.replaceWith(newIcon);
+          } else if (description.toLowerCase().indexOf("thunder") != -1) {
+            const tempIcon = document.querySelector("#description-weather i");
+            const newIcon = document.createElement("i");
+            newIcon.classList.add("fa-solid", "fa-bolt");
+            tempIcon.replaceWith(newIcon);
+          } else if (description.toLowerCase().indexOf("fog") != -1) {
+            const tempIcon = document.querySelector("#description-weather i");
+            const newIcon = document.createElement("i");
+            newIcon.classList.add("fa-solid", "fa-smog");
+            tempIcon.replaceWith(newIcon);
+          } else if (description.toLowerCase().indexOf("snow") != -1) {
+            const tempIcon = document.querySelector("#description-weather i");
+            const newIcon = document.createElement("i");
+            newIcon.classList.add("fa-solid", "fa-snowflake");
+            tempIcon.replaceWith(newIcon);
+          } else {
+            const tempIcon = document.querySelector("#description-weather i");
+            const newIcon = document.createElement("i");
+            newIcon.classList.add("fa-solid", "fa-cloud-sun");
+            tempIcon.replaceWith(newIcon);
+          }
+
+          document.getElementById(
+            "location-name"
+          ).childNodes[2].textContent = ` ${city}, ${state}, ${country}`;
+          document.getElementById(
+            "temp-current"
+          ).childNodes[2].textContent = ` ${temp} °C`;
+          document.getElementById(
+            "description-weather"
+          ).childNodes[2].textContent = ` ${description}`;
+          document.getElementById(
+            "humidity-value"
+          ).childNodes[2].textContent = ` ${humidity}% Humidity`;
+
+          document.getElementById("ll").style.visibility = "visible";
+        } catch (e) {
+          console.log(`Error occurred - ${e}`);
+          document.getElementById("lower").style.height = "10%";
+          document.getElementsByTagName("input")[0].style.background =
+            "#7a0218";
+        } finally {
+          document.getElementsByTagName("input")[0].classList.remove("anim");
+        }
+      }
+
+      let elem = document.getElementById("cityname");
+      elem.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") {
+          if (String(elem.value).length > 2) {
+            getWeather(elem.value);
+          } else {
+            elem.style.background = "#7a0218";
+          }
+        }
+      });
+      let btn = document.getElementById("go");
+      btn.addEventListener("click", () => {
+        if (String(elem.value).length > 2) {
+          getWeather(elem.value);
+        } else {
+          elem.style.background = "#7a0218";
+        }
+      });
+    </script>
+  </body>
+</html>
