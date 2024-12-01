@@ -70,7 +70,7 @@
       async function getWeather(cityname) {
         document.getElementsByTagName("input")[0].classList.add("anim");
         try {
-          res = await fetch(`https://weatherplay-2.onrender.com/weather?city=${cityname}`);
+          res = await fetch(`https://weather-play.onrender.com/weather?city=${cityname}`);
 
           document.getElementById("lower").style.height = "50%";
           resj = await res.json();
